@@ -6,19 +6,29 @@
 //
 
 import Foundation
-struct Pokemon: Codable{
+struct Pokemon: Decodable {
     let id: Int
     let name: String
     let height: Int
     let weight: Int
-    let imageURL: URL?
+    let imageURL: String
     // coding keys to get nested values
-    enum CodingKeys: String, CodingKey{
-        case id = "id"
-        case name = "name"
-        case height = "height"
-        case weight = "weight"
-        case imageURL = "front_default"
+    enum CodingKeys: CodingKey {
+        case id, name, height, weight, sprites
     }
-    
+        
+    enum ImageKeys: String, CodingKey {
+        case imageUrl = "front_default"
+    }
+        
+            init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
+            name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+            height = try container.decodeIfPresent(Int.self, forKey: .height) ?? 0
+            weight = try container.decodeIfPresent(Int.self, forKey: .weight) ?? 0
+            
+            let sprites = try container.nestedContainer(keyedBy: ImageKeys.self, forKey: .sprites)
+            imageURL = try sprites.decode(String.self, forKey: .imageUrl)
+        }
 }

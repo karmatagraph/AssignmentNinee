@@ -26,7 +26,9 @@ class DisplayViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
             // Put your code which should be executed with a delay here
             self.setLabel()
-            self.setImage()
+//            self.setImage()
+            
+            
         }
         //call the func and save it inside pokedetails
         
@@ -69,20 +71,20 @@ class DisplayViewController: UIViewController {
         session.resume()
     }
     
-    func setImage(){
-        DispatchQueue.global(qos: .background).async { [self] in
-                do
-                 {
-                     let data = try Data.init(contentsOf: (pokeDetail?.imageURL!)!)
-                       DispatchQueue.main.async {
-                           imgView.image = UIImage(data: data)
-                       }
-                 }
-                catch {
-                       // error
-                      }
-         }
-    }
+//    func setImage(){
+//        DispatchQueue.global(qos: .background).async { [self] in
+//                do
+//                 {
+//                     let data = try Data.init(contentsOf: (pokeDetail?.imageURL!)!)
+//                       DispatchQueue.main.async {
+//                           imgView.image = UIImage(data: data)
+//                       }
+//                 }
+//                catch {
+//                       // error
+//                      }
+//         }
+//    }
     
     func setLabel(){
         idLbl.text = "ID: " + String(pokeDetail!.id)
@@ -90,7 +92,8 @@ class DisplayViewController: UIViewController {
         heightLbl.text = "Height: " + String(pokeDetail!.height)
         weightLbl.text = "Weight: " + String(pokeDetail!.weight)
 //        imgView.image = KFImage(pokeDetail?.imageURL)
-
+        let imgUrl = String(pokeDetail!.imageURL)
+        imgView.kf.setImage(with: URL(string: imgUrl), placeholder: nil, options: nil, completionHandler: nil)
         
     }
     
