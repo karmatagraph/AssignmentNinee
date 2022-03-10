@@ -22,13 +22,20 @@ class ViewController: UIViewController {
         
         // call 2 times for 40 pokemon
        
-        getPokemons()
+        Task{
+            await getPokemons()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            // Put your code which should be executed with a delay here
+            self.tableView.reloadData()
+        }
+        
         tableView.delegate = self
         tableView.dataSource = self
     
         
     }
-    func getPokemons(){
+    func getPokemons()async{
 
         let session = URLSession.shared.dataTask(with: urlPok) { [self] data, response, error in
             if let error = error {
@@ -56,10 +63,7 @@ class ViewController: UIViewController {
         session.resume()
     }
     
-    // this should be called when the cell is tapped
-    func getPokemonDetails(id: Int){
-        //
-    }
+    
 
 
 }
@@ -73,6 +77,11 @@ extension ViewController: UITableViewDelegate{
             return
         }
         print("you tapped \(String(describing: pokList![indexPath.row]))")
+        // push navigation and also send the data
+        //pass the data to the display screen
+        let destVC = self.storyboard?.instantiateViewController(withIdentifier: "DisplayVC") as! DisplayViewController
+        destVC.tappedPoke = pokList![indexPath.row]
+        self.navigationController?.pushViewController(destVC, animated: true)
     }
 }
 
